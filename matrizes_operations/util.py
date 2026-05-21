@@ -1,18 +1,16 @@
 from PIL import Image
 import numpy as np
-def periodo(A, n):
-    if (not isinstance(A, np.ndarray)):
-        return -1 #A não é uma matriz
-    I = np.identity(2, dtype=int)
-    current = A.copy()
-    k = 1
-    while (not np.array_equal(current % n, I)):
-        current = np.dot(current, A)
-        k+=1
+def periodo(matriz_base, n):
+    current = matriz_base.copy()
+    I = np.eye(2, dtype=int)  # Matriz Identidade 2x2
+    passos = 1
+    
+    # Loop multiplicando a matriz 2x2 e aplicando o módulo n
+    while not np.array_equal(current, I):
+        current = np.dot(current, matriz_base) % n
+        passos += 1
         
-        if k > n*n:
-            return -1
-    return k
+    return passos
     
     
 def expoente_modular(A, k, n):
@@ -31,3 +29,36 @@ def recuperar_imagem(img_array):
     # O modo 'RGB' garante que as cores sejam interpretadas corretamente
     img_final = Image.fromarray(img_array.astype(np.uint8), 'RGB')
     return img_final
+
+
+def inverso_modular_det(det, m=256):
+    """Acha o inverso do determinante no módulo 256."""
+    det = det % m
+    for x in range(1, m):
+        if (det * x) % m == 1:
+            return x
+    raise ValueError("Determinante não possui inverso (não é ímpar).")
+
+def calcular_inversa(matriz):
+    """Calcula a inversa modular 3x3 de forma simples e direta."""
+    # 1. Calcular o determinante inteiro
+    det = int(round(np.linalg.det(matriz)))
+    inv_det = inverso_modular_det(det, 256)
+    
+    # 2. O truque clássico da Álgebra Linear para achar a Adjunta:
+    # A matriz inversa tradicional é (1/det) * Adjunta.
+    # Portanto, se multiplicarmos a inversa tradicional pelo det, sobra a Adjunta!
+    inversa_tradicional = np.linalg.inv(matriz)
+    adjunta = np.round(inversa_tradicional * det).astype(int)
+    
+    # 3. Multiplicar o inverso do determinante pela adjunta no módulo 256
+    matriz_inversa_modular = (inv_det * adjunta) % 256
+    
+    return matriz_inversa_modular.astype(np.uint8)
+
+
+if __name__ == '__main__':
+    array = np.array([[1, 1], [1, 2]])
+    inversa = calcular_inversa(array)
+    print(periodo(array, 750))
+    print(inversa)
