@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-from matrizes_operations.util import *
+from aplication.matrizes_operations.util import *
 
 def gerar_matriz_hill_valida(chave_dh):
     """
@@ -44,7 +44,7 @@ def cifrar_com_chave_dh(img_array, chave_dh):
     
     # 4. Reconstrói a imagem
     img_cifrada_np = pixels_cifrados.reshape(linhas, colunas, 3)
-    return Image.fromarray(img_cifrada_np)
+    return img_cifrada_np
 
 
 def decifrar_com_chave_dh(img_array, chave_dh):
@@ -69,7 +69,7 @@ def decifrar_com_chave_dh(img_array, chave_dh):
     img_decifrada_np = pixels_decifrados.reshape(linhas, colunas, 3).astype(np.uint8)
     
     # 7. Retorna o objeto de Imagem do Pillow pronto para ser exibido
-    return Image.fromarray(img_decifrada_np)
+    return img_decifrada_np
 
 
 # Suponha que o cálculo do Diffie-Hellman resultou neste número secreto compartilhado:
@@ -79,4 +79,4 @@ chave_secreta_dh = 983471298347192384712394817239481273912839
 if __name__ == "__main__":
     img = np.array(Image.open('aplication/deadpool.png'))
     imagem_resultado = cifrar_com_chave_dh(img, chave_secreta_dh)
-    imagem_resultado.show()
+    recuperar_imagem(imagem_resultado).show()

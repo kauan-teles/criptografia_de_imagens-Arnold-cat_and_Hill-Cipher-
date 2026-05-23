@@ -39,6 +39,7 @@ def arnold_fast(img_array, k , matriz_base=None):
     if matriz_base is None:
         matriz_base = np.array([[1, 1],
                       [1, 2]])
+    k = k % periodo( matriz_base ,n)
     M = expoente_modular(matriz_base, k, n)
     # Aplica a fórmula diretamente nos arrays (vetorização)
     #x_novo = (2x + y) % n
@@ -69,7 +70,7 @@ def decript_arnold(img_array, k , matriz_base=None):
         matriz_base = np.array([[1, 1],
                                 [1, 2]])
     p = periodo(matriz_base, n) #periodo dde Paincaré
-    
+    k = k % p
     M = expoente_modular(matriz_base, abs(p - k), n)
     
     nx = (M[0, 0] * x + M[0, 1] * y) % n

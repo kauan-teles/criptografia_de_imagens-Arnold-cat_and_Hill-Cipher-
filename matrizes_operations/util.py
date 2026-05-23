@@ -56,6 +56,14 @@ def calcular_inversa(matriz):
     
     return matriz_inversa_modular.astype(np.uint8)
 
+def image_to_array(path):
+    try:
+        img = Image.open(path)
+        img_array = np.array(img)
+        return img_array
+    except:
+        print("Impossivel carregar a imagem")
+        return False
 
 if __name__ == '__main__':
     array = np.array([[1, 1], [1, 2]])
