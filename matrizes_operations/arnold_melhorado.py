@@ -12,7 +12,7 @@ raiz_projeto = Path(__file__).resolve().parent.parent
 if str(raiz_projeto) not in sys.path:
     sys.path.append(str(raiz_projeto))
 
-from util import *
+from matrizes_operations.util import *
 
 
 def arnold_fast(img_array, k , matriz_base=None):

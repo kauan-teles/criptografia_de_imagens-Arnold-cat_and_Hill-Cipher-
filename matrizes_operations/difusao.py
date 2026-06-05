@@ -12,7 +12,7 @@ if str(raiz_projeto) not in sys.path:
     sys.path.append(str(raiz_projeto))
 
 
-from util import *
+from matrizes_operations.util import *
 
 def gerar_matriz_hill_valida(chave_dh):
     """
