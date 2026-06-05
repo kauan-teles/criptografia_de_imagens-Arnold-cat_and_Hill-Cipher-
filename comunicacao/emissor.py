@@ -9,10 +9,10 @@ raiz_projeto = os.path.abspath(os.path.join(diretorio_atual, "..", ".."))
 if raiz_projeto not in sys.path:
     sys.path.insert(0, raiz_projeto)
 
-from aplication.diffie_hellman import dh
-from aplication.matrizes_operations.util import *
-from aplication.matrizes_operations.arnold_melhorado import *
-from aplication.matrizes_operations.difusao import *
+from diffie_hellman import dh
+from matrizes_operations.util import *
+from matrizes_operations.arnold_melhorado import *
+from matrizes_operations.difusao import *
 
 if len(sys.argv) < 4 or not sys.argv[3].isdigit():
     print("Erro: Parâmetros insuficientes ou incorretos.")
