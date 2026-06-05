@@ -8,14 +8,12 @@ from pathlib import Path
 from PIL import Image
 import numpy
 
-# ---------------------------------------------------------------------------
-# Ajuste o sys.path da mesma forma que emissor.py e receptor.py fazem,
-# para que os imports do projeto funcionem ao rodar direto da raiz.
-# ---------------------------------------------------------------------------
-diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-raiz_projeto = os.path.abspath(os.path.join(diretorio_atual, "..", ".."))
-if raiz_projeto not in sys.path:
-    sys.path.insert(0, raiz_projeto)
+from pathlib import Path
+# Define a pasta raiz do projeto de forma robusta
+raiz_projeto = Path(__file__).resolve().parent.parent
+
+if str(raiz_projeto) not in sys.path:
+    sys.path.append(str(raiz_projeto))
 
 from diffie_hellman import dh
 from matrizes_operations.util import *
