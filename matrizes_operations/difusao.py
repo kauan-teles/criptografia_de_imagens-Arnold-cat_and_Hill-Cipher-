@@ -1,6 +1,18 @@
 from PIL import Image
 import numpy as np
-from aplication.matrizes_operations.util import *
+import os
+import sys
+
+from pathlib import Path
+
+# Define a pasta raiz do projeto de forma robusta
+raiz_projeto = Path(__file__).resolve().parent.parent
+
+if str(raiz_projeto) not in sys.path:
+    sys.path.append(str(raiz_projeto))
+
+
+from util import *
 
 def gerar_matriz_hill_valida(chave_dh):
     """
@@ -36,7 +48,7 @@ def cifrar_com_chave_dh(img_array, chave_dh):
     
     # 2. Cria a matriz chave dinamicamente usando o segredo compartilhado
     K = gerar_matriz_hill_valida(chave_dh)
-    print("Matriz Hill Gerada Dinamicamente:\n", K)
+    #print("Matriz Hill Gerada Dinamicamente:\n", K)
     
     # 3. Vetorização para aplicar a Cifra de Hill sem usar laços 'for'
     pixels_vetorizados = img_np.reshape(-1, 3)
@@ -72,7 +84,7 @@ def decifrar_com_chave_dh(img_array, chave_dh):
     return img_decifrada_np
 
 
-# Suponha que o cálculo do Diffie-Hellman resultou neste número secreto compartilhado:
+
 chave_secreta_dh = 983471298347192384712394817239481273912839
 
 # Executa a difusão

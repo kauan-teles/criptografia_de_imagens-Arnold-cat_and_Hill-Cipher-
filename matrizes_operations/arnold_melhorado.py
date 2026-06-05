@@ -4,32 +4,27 @@ import numpy as np
 import os
 import sys
 
-# Descobre o caminho da pasta onde o arnold_melhorado.py está (matrizes_operations)
-diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+from pathlib import Path
 
-# Adiciona essa pasta ao mapa de busca do Python se ela já não estiver lá
-if diretorio_atual not in sys.path:
-    sys.path.append(diretorio_atual)
+# Define a pasta raiz do projeto de forma robusta
+raiz_projeto = Path(__file__).resolve().parent.parent
 
-# AGORA SIM o seu import original vai funcionar perfeitamente:
+if str(raiz_projeto) not in sys.path:
+    sys.path.append(str(raiz_projeto))
+
 from util import *
-
-
-
-
-
 
 
 def arnold_fast(img_array, k , matriz_base=None):
     """_summary_
 
     Args:
-        img_array (_np.ndarray_): _imagem em array_
+        img_array (_numpy.ndarray_): _imagem em array_
         k (_int_): _chave de criptografia -> chave única_
-        matriz_base (_np.ndarray_, optional): _é a matriz base da criptografia, mas é  aconselhavel deixar a matriz base de fibonacci criada na função_. Defaults to None.
+        matriz_base (_numpy.ndarray_, optional): _é a matriz base da criptografia, mas é  aconselhavel deixar a matriz base de fibonacci criada na função_. Defaults to None.
 
     Returns:
-        _type_: _description_
+        _numpy.ndarray._: _imagem em array confundida com o gato de Arnold_
     """
     
     n = img_array.shape[0]
@@ -55,12 +50,12 @@ def decript_arnold(img_array, k , matriz_base=None):
     """_summary_
 
     Args:
-        img_array (_np.ndarray_): _imagem em array_
+        img_array (_numpy.ndarray_): _imagem em array_
         k (_int_): _é o valor chave de criptografia -> chave única_
-        matriz_base (_np.ndarray_, optional): _é a matriz base feita na criptografia, é aconselhavel deixar a função fazer o trabalho_. Defaults to None.
+        matriz_base (_numpy.ndarray_, optional): _é a matriz base feita na criptografia, é aconselhavel deixar a função fazer o trabalho_. Defaults to None.
 
     Returns:
-        _type_: _description_
+        _numpy.ndarray_: _imagem em array desconfundida com o processo inverso do gato de Arnold_
     """
     n = img_array.shape[0]
     
