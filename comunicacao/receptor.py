@@ -16,6 +16,7 @@ from diffie_hellman import dh
 from matrizes_operations.util import *
 from matrizes_operations.difusao import *
 from matrizes_operations.arnold_melhorado import *
+from matrizes_operations.criptografar_decriptografar import *
 
 
 def receber_mensagem(sock):
@@ -87,10 +88,9 @@ try:
     img_recebida = Image.open(io.BytesIO(dados_img))
     img_array = np.array(img_recebida)
     
-    img_undifundir = decifrar_com_chave_dh(img_array, chave_secreta)
-    img_unconfundir = decript_arnold(img_undifundir, chave_secreta)
+    img_decript = decriptografar(img_array, chave_secreta)
     
-    recuperar_imagem(img_unconfundir).show()
+    recuperar_imagem(img_decript).show()
 
 except Exception as e:
     print(f"[-] Ocorreu um erro no servidor: {e}")

@@ -2,7 +2,7 @@ import socket
 import sys
 import io
 import os
-from pathlib import Path
+
 from pathlib import Path
 
 # Define a pasta raiz do projeto de forma robusta
@@ -15,6 +15,7 @@ from diffie_hellman import dh
 from matrizes_operations.util import *
 from matrizes_operations.arnold_melhorado import *
 from matrizes_operations.difusao import *
+from matrizes_operations.criptografar_decriptografar import *
 
 if len(sys.argv) < 4 or not sys.argv[3].isdigit():
     print("Erro: Parâmetros insuficientes ou incorretos.")
@@ -71,10 +72,8 @@ try:
     # --- Criptografia e envio da imagem ---
     imagem = image_to_array(CAMINHO_IMAGEM)
 
-    img_confundida = arnold_fast(imagem, chave_secreta)
-    img_difundida = cifrar_com_chave_dh(img_confundida, chave_secreta)
-
-    img_criptografada = recuperar_imagem(img_difundida)
+    img_final = criptografar(imagem, chave_secreta)
+    img_criptografada = recuperar_imagem(img_final)
     buffer_bytes = io.BytesIO()
     img_criptografada.save(buffer_bytes, format='PNG')
     bytes_da_imagem = buffer_bytes.getvalue()

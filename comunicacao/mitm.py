@@ -170,7 +170,6 @@ def realizar_ataque(sock_emissor: socket.socket, endereco_emissor):
         img_original_arr = decript_arnold(img_undifundida, segredo_com_emissor)
 
         img_original = recuperar_imagem(img_original_arr)
-        img_original.show()
         timestamp = int(time.time())
         caminho_salvo = PASTA_SAIDA / f"imagem_interceptada_{timestamp}.png"
         img_original.save(caminho_salvo)
