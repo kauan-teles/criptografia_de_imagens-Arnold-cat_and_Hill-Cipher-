@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 
+
 from pathlib import Path
 
 # Define a pasta raiz do projeto de forma robusta
@@ -22,9 +23,12 @@ def gerar_matriz_hill_valida(chave_dh):
     # 1. Usamos a chave do DH como semente do gerador pseudoaleatório.
     # Como a semente é a mesma, emissor e receptor criarão a mesma sequência!
     # Convertemos para string e depois pegamos o hash/inteiro se for muito grande
-    semente = int(chave_dh) % (2**32 - 1)
-    rng = np.random.default_rng(semente)
-    
+    X = np.array([[1, 1, 1], 
+                  [1, 2, 2],
+                  [2, 3, 4]])
+    #semente = int(chave_dh) % (2**32 - 1)
+    #rng = np.random.default_rng(semente)
+    """
     while True:
         # Gerar 9 números aleatórios entre 0 e 255 para preencher a matriz 3x3
         matriz = rng.integers(0, 256, size=(3, 3))
@@ -39,6 +43,10 @@ def gerar_matriz_hill_valida(chave_dh):
         if det_mod_256 != 0 and det_mod_256 % 2 != 0:
             return matriz
         # Se não for ímpar, o 'while' continua e o gerador cria outra de forma determinística
+    """
+    
+    M = expoente_modular(X, chave_dh, 256)
+    return M
 
 def cifrar_com_chave_dh(img_array, chave_dh):
     # 1. Abre a imagem com o PIL
@@ -83,12 +91,65 @@ def decifrar_com_chave_dh(img_array, chave_dh):
     # 7. Retorna o objeto de Imagem do Pillow pronto para ser exibido
     return img_decifrada_np
 
+def difundir_canal(flat):
+    n = len(flat)
+    saida = flat.copy().astype(np.uint8)
+
+    # Passagem frente: soma modular (não cancelável)
+    for i in range(1, n):
+        saida[i] = np.uint8((int(saida[i]) + int(saida[i-1])) % 256)
+
+    # Passagem trás: XOR sobre resultado da soma
+    for i in range(n - 2, -1, -1):
+        saida[i] = saida[i] ^ saida[i+1]
+
+    return saida
+
+def dedifundir_canal(flat):
+    n = len(flat)
+    saida = flat.copy().astype(np.uint8)
+
+    # Desfaz trás: XOR é sua própria inversa
+    for i in range(0, n - 1):
+        saida[i] = saida[i] ^ saida[i+1]
+
+    # Desfaz frente: subtração modular
+    for i in range(n - 1, 0, -1):
+        saida[i] = np.uint8((int(saida[i]) - int(saida[i-1])) % 256)
+
+    return saida
+
+def difusao_avalanche(img_array):
+    img_difundida = img_array.copy()
+    shape_original = img_difundida.shape
+
+    if len(shape_original) == 3:
+        altura, largura, canais = shape_original
+        for c in range(canais):
+            flat = img_difundida[:, :, c].flatten().astype(np.uint8)
+            img_difundida[:, :, c] = difundir_canal(flat).reshape((altura, largura))
+    else:
+        flat = img_difundida.flatten().astype(np.uint8)
+        img_difundida = difundir_canal(flat).reshape(shape_original)
+
+    return img_difundida
+
+def dedifusao_avalanche(img_difundida):
+    img_recuperada = img_difundida.copy()
+    shape_original = img_recuperada.shape
+
+    if len(shape_original) == 3:
+        altura, largura, canais = shape_original
+        for c in range(canais):
+            flat = img_recuperada[:, :, c].flatten().astype(np.uint8)
+            img_recuperada[:, :, c] = dedifundir_canal(flat).reshape((altura, largura))
+    else:
+        flat = img_recuperada.flatten().astype(np.uint8)
+        img_recuperada = dedifundir_canal(flat).reshape(shape_original)
+
+    return img_recuperada
 
 
 chave_secreta_dh = 983471298347192384712394817239481273912839
 
 # Executa a difusão
-if __name__ == "__main__":
-    img = np.array(Image.open('aplication/deadpool.png'))
-    imagem_resultado = cifrar_com_chave_dh(img, chave_secreta_dh)
-    recuperar_imagem(imagem_resultado).show()

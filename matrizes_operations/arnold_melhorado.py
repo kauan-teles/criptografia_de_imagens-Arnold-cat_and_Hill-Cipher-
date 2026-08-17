@@ -77,3 +77,20 @@ def decript_arnold(img_array, k , matriz_base=None):
 
 
 
+if __name__ == '__main__':
+    from util import image_to_array
+    from PIL import Image
+    from difusao import *
+    from diffie_hellman.dh import *
+    chave = gerar_chave_privada()
+    name = "peppers"
+    img = image_to_array(f"/home/kauan-teles/Documentos/Algebra-Linear/aplication/imagens/{name}/{name}.webp")
+    a = arnold_fast(img, chave)
+    h = cifrar_com_chave_dh(img, chave)
+    ah = cifrar_com_chave_dh(a, chave)
+    
+    recuperar_imagem(a).save(f"/home/kauan-teles/Documentos/Algebra-Linear/aplication/imagens/{name}/{name}_arnold.png")
+    recuperar_imagem(ah).save(f"/home/kauan-teles/Documentos/Algebra-Linear/aplication/imagens/{name}/{name}_arnold_and_hill.png")
+    recuperar_imagem(h).save(f"/home/kauan-teles/Documentos/Algebra-Linear/aplication/imagens/{name}/{name}_hill.png")
+    
+    
